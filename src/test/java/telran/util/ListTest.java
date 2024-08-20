@@ -8,4 +8,6 @@ public abstract class ListTest extends CollectionTest {
         super.setUp();
         list = (List<Integer>) collection;
     }
+
+    
 }

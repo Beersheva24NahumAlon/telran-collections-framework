@@ -1,6 +1,7 @@
 package telran.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -25,5 +26,24 @@ public abstract class CollectionTest {
     @Test
     void sizeTest() {
         assertEquals(array.length, collection.size());
+    }
+
+    @Test
+    void removeTest() {
+        assertFalse(collection.remove(4));
+        assertTrue(collection.remove(3));
+        assertTrue(collection.remove(17));
+        assertEquals(array.length - 2, collection.size());
+    }
+
+    @Test
+    void isEmptyTest() {
+        assertFalse(collection.isEmpty());
+    }
+
+    @Test
+    void containsTest() {
+        assertTrue(collection.contains(-10));
+        assertFalse(collection.contains(-11));
     }
 }
