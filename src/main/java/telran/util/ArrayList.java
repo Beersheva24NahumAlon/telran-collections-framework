@@ -81,7 +81,16 @@ public class ArrayList<T> implements List<T> {
 
     @Override
     public void add(int index, T obj) {
-        //TODO
+        if (size == array.length) {
+            reallocate();
+        }
+        int i = size;
+        size++;
+        while (i >= index) {
+            array[i + 1] = array[i];
+            i--;
+        }
+        array[index] = obj;
     }
 
     @SuppressWarnings("unchecked")
