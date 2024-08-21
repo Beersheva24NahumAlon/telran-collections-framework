@@ -22,7 +22,7 @@ public abstract class ListTest extends CollectionTest {
         list.add(3, 1);
         list.add(8, 17);
         assertArrayEquals(expected, list.stream().toArray());
-        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> list.add(13, 20));
+        assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.add(13, 20));
     }
 
     @Test
@@ -32,24 +32,25 @@ public abstract class ListTest extends CollectionTest {
         list.remove(0);
         list.remove(6);
         assertArrayEquals(expected, list.stream().toArray());
-        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> list.remove(20));
+        assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.remove(20));
     }
 
     @Test
     void indexOfTest() {
-        list.add(3, 20);
-        assertEquals(2, list.indexOf(20));
+        list.add(0, null);
+        assertEquals(3, list.indexOf(20));
     }
 
     @Test
     void getTest() {
         assertEquals(100, list.get(6));
-        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> list.get(20));
+        assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.get(20));
     }
 
     @Test
     void lastIndexOfTest() {
         list.add(3, 20);
-        assertEquals(3, list.lastIndexOf(20));
+        list.add(0, null);
+        assertEquals(4, list.lastIndexOf(20));
     }
 }

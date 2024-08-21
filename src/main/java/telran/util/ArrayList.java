@@ -76,11 +76,14 @@ public class ArrayList<T> implements List<T> {
                 throw new NoSuchElementException();
             }
             return (T) array[curIndex++];
-        }       
+        }
     }
 
     @Override
     public void add(int index, T obj) {
+        if (index >= size) {
+            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
+        }
         if (size == array.length) {
             reallocate();
         }
@@ -96,6 +99,9 @@ public class ArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
+        if (index >= size) {
+            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
+        }
         int i = index;
         size--;
         while (i < size) {
@@ -108,13 +114,16 @@ public class ArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
+        if (index >= size) {
+            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
+        }
         return (T) array[index];
     }
 
     @Override
     public int indexOf(T pattern) {
         int i = 0;
-        while (i < size && !array[i].equals(pattern)) {
+        while (i < size && !pattern.equals(array[i])) {
             i++;
         }
         return i != size ? i : -1;
@@ -123,7 +132,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(T pattern) {
         int i = size - 1;
-        while (i > -1 && !array[i].equals(pattern)) {
+        while (i > -1 && !pattern.equals(array[i])) {
             i--;
         }
         return i;
