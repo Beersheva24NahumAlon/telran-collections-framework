@@ -16,8 +16,7 @@ public abstract class ListTest extends CollectionTest {
     }
 
     @Test
-    @Override
-    void addTest() {
+    void addIndexTest() {
         Integer[] expected = { 3, -10, 20, 1, 1, 10, 8, 100, 17, 17 };
         list.add(3, 1);
         list.add(8, 17);
@@ -26,8 +25,7 @@ public abstract class ListTest extends CollectionTest {
     }
 
     @Test
-    @Override
-    void removeTest() {
+    void removeIndexTest() {
         Integer[] expected = { -10, 20, 1, 10, 8, 100 };
         list.remove(0);
         list.remove(6);

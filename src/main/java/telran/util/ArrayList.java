@@ -3,6 +3,7 @@ package telran.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 16;
@@ -79,11 +80,16 @@ public class ArrayList<T> implements List<T> {
         }
     }
 
+    private void checkBounds(int index, boolean inclusiveBounds) {
+        int limit = inclusiveBounds ? size : size - 1;
+        if (index > limit || index < 0) {
+            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", limit));
+        }
+    }
+
     @Override
     public void add(int index, T obj) {
-        if (index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
-        }
+        checkBounds(index, true);
         if (size == array.length) {
             reallocate();
         }
@@ -99,9 +105,7 @@ public class ArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
-        if (index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
-        }
+        checkBounds(index, false);
         int i = index;
         size--;
         while (i < size) {
@@ -114,16 +118,14 @@ public class ArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
-        if (index >= size) {
-            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", size));
-        }
+        checkBounds(index, true);
         return (T) array[index];
     }
 
     @Override
     public int indexOf(T pattern) {
         int i = 0;
-        while (i < size && !pattern.equals(array[i])) {
+        while (i < size && !Objects.equals(array[i], pattern)) {
             i++;
         }
         return i != size ? i : -1;
@@ -132,7 +134,7 @@ public class ArrayList<T> implements List<T> {
     @Override
     public int lastIndexOf(T pattern) {
         int i = size - 1;
-        while (i > -1 && !pattern.equals(array[i])) {
+        while (i > -1 && !Objects.equals(array[i], pattern)) {
             i--;
         }
         return i;

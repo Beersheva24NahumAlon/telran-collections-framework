@@ -3,10 +3,12 @@ package telran.util;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,14 +45,7 @@ public abstract class CollectionTest {
     @Test
     void isEmptyTest() {
         assertFalse(collection.isEmpty());
-        assertTrue(collection.remove(3));
-        assertTrue(collection.remove(-10));
-        assertTrue(collection.remove(20));
-        assertTrue(collection.remove(1));
-        assertTrue(collection.remove(10));
-        assertTrue(collection.remove(8));
-        assertTrue(collection.remove(100));
-        assertTrue(collection.remove(17));
+        Arrays.stream(array).forEach(n -> collection.remove(n));
         assertTrue(collection.isEmpty());
     }
 
@@ -63,12 +58,12 @@ public abstract class CollectionTest {
     @Test
     void iteratorTest() {
         Iterator<Integer> iterator = collection.iterator();
-        Integer[] expected = { 3, -10, 20, 1, 10, 8, 100, 17 };
-        Integer[] actual = new Integer[expected.length];
+        Integer[] actual = new Integer[array.length];
         int i = 0;
         while (iterator.hasNext()) {
             actual[i++] = iterator.next();
         }
-        assertArrayEquals(expected, actual);
+        assertArrayEquals(array, actual);
+        assertThrowsExactly(NoSuchElementException.class, iterator::next );
     }
 }
