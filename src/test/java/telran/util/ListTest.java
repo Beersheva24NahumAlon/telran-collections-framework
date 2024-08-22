@@ -26,9 +26,10 @@ public abstract class ListTest extends CollectionTest {
 
     @Test
     void removeIndexTest() {
-        Integer[] expected = { -10, 20, 1, 10, 8, 100 };
+        Integer[] expected = { -10, 20, 10, 8, 100 };
         list.remove(0);
         list.remove(6);
+        list.remove(2);
         assertArrayEquals(expected, list.stream().toArray());
         assertThrowsExactly(IndexOutOfBoundsException.class, () -> list.remove(20));
     }

@@ -83,7 +83,7 @@ public class ArrayList<T> implements List<T> {
     private void checkBounds(int index, boolean inclusiveBounds) {
         int limit = inclusiveBounds ? size : size - 1;
         if (index > limit || index < 0) {
-            throw new IndexOutOfBoundsException(String.format("Index must be less than %d", limit));
+            throw new IndexOutOfBoundsException(String.format("Index must be in range from 0 to %d", limit));
         }
     }
 
