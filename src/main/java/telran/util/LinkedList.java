@@ -194,7 +194,7 @@ public class LinkedList<T> implements List<T> {
 
     @Override
     public T get(int index) {
-        checkBounds(index, true);
+        checkBounds(index, false);
         Node<T> node = getNode(index);
         return node.obj;
     }

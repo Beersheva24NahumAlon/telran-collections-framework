@@ -118,7 +118,7 @@ public class ArrayList<T> implements List<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(int index) {
-        checkBounds(index, true);
+        checkBounds(index, false);
         return (T) array[index];
     }
 

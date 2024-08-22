@@ -38,6 +38,7 @@ public abstract class ListTest extends CollectionTest {
     void indexOfTest() {
         list.add(0, null);
         assertEquals(3, list.indexOf(20));
+        assertEquals(-1 , list.indexOf(300));
     }
 
     @Test
@@ -51,5 +52,6 @@ public abstract class ListTest extends CollectionTest {
         list.add(3, 20);
         list.add(0, null);
         assertEquals(4, list.lastIndexOf(20));
+        assertEquals(-1 , list.indexOf(300));
     }
 }
