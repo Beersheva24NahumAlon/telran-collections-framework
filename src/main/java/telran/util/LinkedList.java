@@ -76,21 +76,20 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private Node<T> removeNode(int index) {
+    private Node<T> removeNode(Node<T> node) {
         Node<T> res;
-        if (index == 0) {
+        if (node == head) {
             res = removeHead();
-        } else if (index == size - 1) {
+        } else if (node == tail) {
             res = removeTail();
         } else {
-            res = removeMiddle(index);
+            res = removeMiddle(node);
         }
         size--;
         return res;
     }
 
-    private Node<T> removeMiddle(int index) {
-        Node<T> nodeToRemove = getNode(index);
+    private Node<T> removeMiddle(Node<T> nodeToRemove) {
         Node<T> nodeBefore = nodeToRemove.prev;
         Node<T> nodeAfter = nodeToRemove.next;
         nodeBefore.next = nodeAfter;
@@ -188,7 +187,7 @@ public class LinkedList<T> implements List<T> {
     @Override
     public T remove(int index) {
         checkBounds(index, false);
-        Node<T> node = removeNode(index);
+        Node<T> node = removeNode(getNode(index));
         return node.obj;
     }
 
