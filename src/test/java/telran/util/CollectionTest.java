@@ -29,7 +29,7 @@ public abstract class CollectionTest {
         Integer[] expected1 = { 3, 1, 17 };
         collection.removeIf(n -> n % 2 == 0);
         assertArrayEquals(expected1, collection.stream().toArray());
-        Integer[] expected2 = { };
+        Integer[] expected2 = {};
         collection.removeIf(n -> n % 2 == 1);
         assertArrayEquals(expected2, collection.stream().toArray());
     }
@@ -41,11 +41,15 @@ public abstract class CollectionTest {
     }
 
     @Test
-    void addTest() {
-        Integer[] expected = { 3, -10, 20, 1, 10, 8, 100, 17, 200, 17 };
+    void addNonExistingTest() {
         assertTrue(collection.add(200));
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 200 });
+    }
+
+    @Test
+    void addExistingTest() {
         assertTrue(collection.add(17));
-        assertArrayEquals(expected, collection.stream().toArray());
+        runTest(new Integer[] { 3, -10, 20, 1, 10, 8, 100, 17, 17 });
     }
 
     @Test
@@ -55,11 +59,10 @@ public abstract class CollectionTest {
 
     @Test
     void removeTest() {
-        Integer[] expected = { -10, 20, 1, 10, 8, 100 };
         assertFalse(collection.remove(4));
         assertTrue(collection.remove(3));
         assertTrue(collection.remove(17));
-        assertArrayEquals(expected, collection.stream().toArray());
+        runTest(new Integer[] { -10, 20, 1, 10, 8, 100 });
     }
 
     @Test
@@ -84,7 +87,7 @@ public abstract class CollectionTest {
             actual[i++] = iterator.next();
         }
         assertArrayEquals(array, actual);
-        assertThrowsExactly(NoSuchElementException.class, iterator::next );
+        assertThrowsExactly(NoSuchElementException.class, iterator::next);
     }
 
     @Test
@@ -100,10 +103,23 @@ public abstract class CollectionTest {
         assertThrowsExactly(IllegalStateException.class, () -> it.remove());
     }
 
-    @Test 
+    @Test
     void performanceTest() {
         collection.clear();
         IntStream.range(0, N_ELEMENTS).forEach(i -> collection.add(random.nextInt()));
+        collection.removeIf(n -> n % 2 == 0);
+        assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
         collection.clear();
+        assertTrue(collection.isEmpty());
+    }
+
+    protected void runTest(Integer[] expected) {
+        assertArrayEquals(expected, collection.stream().toArray(Integer[]::new));
+        assertEquals(expected.length, collection.size());
+    }
+
+    @Test
+    void streamTest() {
+       runTest(array);
     }
 }
