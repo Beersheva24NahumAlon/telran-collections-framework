@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class ArrayList<T> implements List<T> {
     private static final int DEFAULT_CAPACITY = 16;
@@ -32,29 +33,8 @@ public class ArrayList<T> implements List<T> {
     }
 
     @Override
-    public boolean remove(T pattern) {
-        boolean isFound = false;
-        int index = indexOf(pattern);
-        if (index != -1) {
-            isFound = true;
-            remove(index);
-        }
-        return isFound;
-    }
-
-    @Override
     public int size() {
         return size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
-    public boolean contains(T pattern) {
-        return indexOf(pattern) >= 0;
     }
 
     @Override
@@ -64,9 +44,11 @@ public class ArrayList<T> implements List<T> {
 
     private class CollectionIterator implements Iterator<T> {
         int curIndex = 0;
+        boolean flagNext = false;
 
         @Override
         public boolean hasNext() {
+            flagNext = true;
             return curIndex < size;
         }
 
@@ -78,12 +60,14 @@ public class ArrayList<T> implements List<T> {
             }
             return (T) array[curIndex++];
         }
-    }
 
-    private void checkBounds(int index, boolean inclusiveBounds) {
-        int limit = inclusiveBounds ? size : size - 1;
-        if (index > limit || index < 0) {
-            throw new IndexOutOfBoundsException(String.format("Index must be in range from 0 to %d", limit));
+        @Override
+        public void remove() {
+            if (!flagNext) {
+                throw new IllegalStateException();
+            }
+            ArrayList.this.remove(--curIndex);
+            flagNext = false;
         }
     }
 
@@ -112,6 +96,7 @@ public class ArrayList<T> implements List<T> {
             array[i] = array[i + 1];
             i++;
         }
+        array[size] = null;
         return (T) array[index];
     }
 
@@ -139,4 +124,24 @@ public class ArrayList<T> implements List<T> {
         }
         return i;
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean removeIf(Predicate<T> predicate) {
+        int placeToMove = 0;
+        int placeToStand = -1;
+        int count = 0;
+        for (int i = 0; i < size; i++) {
+            if (predicate.test((T) array[i])) {
+                placeToMove = placeToStand + 1;
+                count++;
+            } else {
+                array[placeToMove] = array[i];
+                //array[i] = null;
+                placeToStand = placeToMove;
+            }
+        }
+        size = size - count;
+        return count > 0;    
+    } 
 }

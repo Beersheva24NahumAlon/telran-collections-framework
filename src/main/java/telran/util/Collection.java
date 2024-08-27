@@ -1,5 +1,7 @@
 package telran.util;
 
+import java.util.Iterator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -20,5 +22,22 @@ public interface Collection<T> extends Iterable<T> {
 
     default Stream<T> parallel() {
         return StreamSupport.stream(spliterator(), true);
+    }
+
+    default boolean removeIf (Predicate<T> predicate) {
+        int oldSize = size();
+        Iterator<T> it = iterator();
+        T obj = null;
+        while (it.hasNext()) {
+            obj = it.next();
+            if (predicate.test(obj)) {
+                it.remove();
+            }
+        }
+        return size() < oldSize;
+    }
+
+    default void clear() {
+        removeIf(n -> true);
     }
 }

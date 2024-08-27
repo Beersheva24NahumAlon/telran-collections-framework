@@ -10,4 +10,33 @@ public interface List<T> extends Collection<T> {
     int indexOf(T pattern);
 
     int lastIndexOf(T pattern);
+
+    @Override
+    default boolean remove(T pattern) {
+        boolean isFound = false;
+        int index = indexOf(pattern);
+        if (index >= 0) {
+            isFound = true;
+            remove(index);
+        }
+        return isFound;
+    }
+
+    @Override
+    default boolean contains(T pattern) {
+        return indexOf(pattern) >= 0;
+    }
+
+    @Override
+    default boolean isEmpty() {
+        return size() == 0;
+    }
+
+    default void checkBounds(int index, boolean inclusiveBounds) {
+        int size = size();
+        int limit = inclusiveBounds ? size : size - 1;
+        if (index > limit || index < 0) {
+            throw new IndexOutOfBoundsException(String.format("Index must be in range from 0 to %d", limit));
+        }
+    }
 }
