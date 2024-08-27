@@ -129,19 +129,14 @@ public class ArrayList<T> implements List<T> {
     @Override
     public boolean removeIf(Predicate<T> predicate) {
         int placeToMove = 0;
-        int placeToStand = -1;
-        int count = 0;
         for (int i = 0; i < size; i++) {
-            if (predicate.test((T) array[i])) {
-                placeToMove = placeToStand + 1;
-                count++;
-            } else {
-                array[placeToMove] = array[i];
-                //array[i] = null;
-                placeToStand = placeToMove;
+            if (!predicate.test((T) array[i])) {
+                array[placeToMove++] = array[i];
             }
         }
-        size = size - count;
-        return count > 0;    
+        Arrays.fill(array, placeToMove, size, null);
+        boolean res = size > placeToMove;
+        size = placeToMove;
+        return res;    
     } 
 }

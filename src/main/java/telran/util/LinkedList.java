@@ -136,11 +136,9 @@ public class LinkedList<T> implements List<T> {
     private class LinkedListIterator implements Iterator<T> {
         Node<T> current = head;
         Node<T> previous = null;
-        boolean flagNext = false;
 
         @Override
         public boolean hasNext() {
-            flagNext = true;
             return current != null;
         }
 
@@ -157,11 +155,11 @@ public class LinkedList<T> implements List<T> {
 
         @Override
         public void remove() {
-            if (!flagNext) {
+            if (previous == null) {
                 throw new IllegalStateException();
             }
-            LinkedList.this.removeNode(previous);
-            flagNext = false;
+            removeNode(previous);
+            previous = null;
         }
     }
 
