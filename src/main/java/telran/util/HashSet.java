@@ -41,7 +41,7 @@ public class HashSet<T> implements Set<T> {
             list = new ArrayList<>(3);
         }
         list.add(obj);
-        hashTable[index] = list;
+        table[index] = list;
     }
 
     private int getIndex(T obj, int length) {
@@ -55,7 +55,7 @@ public class HashSet<T> implements Set<T> {
         for (List<T> list : hashTable) {
             if (list != null) {
                 list.forEach(obj -> addObjInHashTable(obj, tempTable));
-                list.clear();
+                list.clear(); // ??? for testing if it doesn't work remove this statement
             }
         }
         hashTable = tempTable;
@@ -69,10 +69,14 @@ public class HashSet<T> implements Set<T> {
         if (res) {
             size--;
         }
-        if (list.isEmpty()) {
+        clearIfListIsEmpty(index);
+        return res;
+    }
+
+    private void clearIfListIsEmpty(int index) {
+        if (hashTable[index].isEmpty()) {
             hashTable[index] = null;
         }
-        return res;
     }
 
     @Override
@@ -99,22 +103,22 @@ public class HashSet<T> implements Set<T> {
 
     private class HashSetIterator implements Iterator<T> {
         int indexHashTable = -1;
-        int index = 0;
+        int prevIndexHashTable = -1;
         boolean flagNext = false;
-        Iterator<T> currentIterator = nextNonEmptyList().iterator();
-        //Iterator<T> prevIterator;
-        
+        Iterator<T> currentIterator = nextNonEmptyListIterator();
+        Iterator<T> prevIterator;
+
         @Override
         public boolean hasNext() {
-            return index < size;
+            return currentIterator != null;
         }
 
-        private List<T> nextNonEmptyList() {
+        private Iterator<T> nextNonEmptyListIterator() {
             indexHashTable++;
             while (indexHashTable < hashTable.length && hashTable[indexHashTable] == null) {
                 indexHashTable++;
             }
-            return indexHashTable == hashTable.length ? null : hashTable[indexHashTable];
+            return indexHashTable == hashTable.length ? null : hashTable[indexHashTable].iterator();
         }
 
         @Override
@@ -123,24 +127,30 @@ public class HashSet<T> implements Set<T> {
                 throw new NoSuchElementException();
             }
             flagNext = true;
-            if (!currentIterator.hasNext()) {   
-                //prevIterator = currentIterator;
-                currentIterator = nextNonEmptyList().iterator();
+            T res = currentIterator.next();
+            if (!currentIterator.hasNext()) {
+                prevIterator = currentIterator;
+                prevIndexHashTable = indexHashTable;
+                currentIterator = nextNonEmptyListIterator();
+            } else {
+                prevIterator = null;
             }
-            index++;
-            return currentIterator.next();
+            return res;
         }
-        
+
         @Override
         public void remove() {
             if (!flagNext) {
                 throw new IllegalStateException();
             }
-            currentIterator.remove();
-            size--;
-            if (hashTable[indexHashTable].isEmpty()) {
-                hashTable[indexHashTable] = null;
+            if (prevIterator == null) {
+                currentIterator.remove();
+                clearIfListIsEmpty(indexHashTable);
+            } else {
+                prevIterator.remove();
+                clearIfListIsEmpty(prevIndexHashTable);
             }
+            size--;
             flagNext = false;
         }
     }
@@ -148,9 +158,16 @@ public class HashSet<T> implements Set<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(Object obj) {
+        T res = null;
         T pattern = (T) obj;
         int index = getIndex(pattern, hashTable.length);
-        int indexInList = hashTable[index].indexOf(pattern);
-        return indexInList >= 0 ? hashTable[index].get(indexInList) : null;
+        List<T> list = hashTable[index];
+        if (list != null) {
+            int indexInList = hashTable[index].indexOf(pattern);
+            if (indexInList >= 0) {
+                res = hashTable[index].get(indexInList);
+            }
+        }
+        return res;
     }
 }
