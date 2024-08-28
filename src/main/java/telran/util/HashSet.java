@@ -1,6 +1,7 @@
 package telran.util;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class HashSet<T> implements Set<T> {
     private static final int DEFAULT_HASH_TABLE_LENGTH = 16;
@@ -63,8 +64,14 @@ public class HashSet<T> implements Set<T> {
     @Override
     public boolean remove(T pattern) {
         int index = getIndex(pattern, hashTable.length);
-        boolean res = hashTable[index].remove(pattern);
-        size--;
+        List<T> list = hashTable[index];
+        boolean res = list.remove(pattern);
+        if (res) {
+            size--;
+        }
+        if (list.isEmpty()) {
+            hashTable[index] = null;
+        }
         return res;
     }
 
@@ -91,25 +98,50 @@ public class HashSet<T> implements Set<T> {
     }
 
     private class HashSetIterator implements Iterator<T> {
-        Iterator<T> currentIterator;
-        Iterator<T> prevIterator;
-        int indexIterator;
-
+        int indexHashTable = -1;
+        int index = 0;
+        boolean flagNext = false;
+        Iterator<T> currentIterator = nextNonEmptyList().iterator();
+        //Iterator<T> prevIterator;
+        
         @Override
         public boolean hasNext() {
-            //TODO
-            return false;
+            return index < size;
+        }
+
+        private List<T> nextNonEmptyList() {
+            indexHashTable++;
+            while (indexHashTable < hashTable.length && hashTable[indexHashTable] == null) {
+                indexHashTable++;
+            }
+            return indexHashTable == hashTable.length ? null : hashTable[indexHashTable];
         }
 
         @Override
         public T next() {
-            //TODO
-            return null;
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            flagNext = true;
+            if (!currentIterator.hasNext()) {   
+                //prevIterator = currentIterator;
+                currentIterator = nextNonEmptyList().iterator();
+            }
+            index++;
+            return currentIterator.next();
         }
         
         @Override
         public void remove() {
-
+            if (!flagNext) {
+                throw new IllegalStateException();
+            }
+            currentIterator.remove();
+            size--;
+            if (hashTable[indexHashTable].isEmpty()) {
+                hashTable[indexHashTable] = null;
+            }
+            flagNext = false;
         }
     }
 
