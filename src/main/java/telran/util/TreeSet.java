@@ -96,7 +96,7 @@ public class TreeSet<T> implements Set<T> {
             removeNonJunction(node);
         }
         size--;
-        
+
     }
 
     private void removeJunction(Node<T> node) {
@@ -172,7 +172,7 @@ public class TreeSet<T> implements Set<T> {
             if (compRes != 0) {
                 res = null;
             }
-        }      
+        }
         return res;
     }
 
@@ -186,18 +186,6 @@ public class TreeSet<T> implements Set<T> {
         }
         return res;
     }
-
-    // private Node<T> getNode(T pattern) {
-    //     Node<T> res = getParentOrNode(pattern);
-    //     int compRes = comparator.compare(pattern, res.obj);
-    //     return compRes == 0 ? res : null;
-
-    // }
-    // private Node<T> getParent(T pattern) {
-    //     Node<T> res = getParentOrNode(pattern);
-    //     int compRes = comparator.compare(pattern, res.obj);
-    //     return compRes == 0 ? null : res;
-    // }
 
     @SuppressWarnings("unchecked")
     public TreeSet() {
