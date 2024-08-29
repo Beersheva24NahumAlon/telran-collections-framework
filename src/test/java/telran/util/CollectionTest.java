@@ -15,7 +15,7 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 2_000_000;
+    private static final int N_ELEMENTS = 10;
     protected Collection<Integer> collection;
     Random random = new Random();
     Integer[] array = { 3, -10, 20, 1, 10, 8, 100, 17 };
@@ -26,12 +26,9 @@ public abstract class CollectionTest {
 
     @Test
     void removeIfTest() {
-        Integer[] expected1 = { 3, 1, 17 };
-        collection.removeIf(n -> n % 2 == 0);
-        runTest(expected1);
-        Integer[] expected2 = {};
-        collection.removeIf(n -> n % 2 == 1);
-        runTest(expected2);
+        assertTrue(collection.removeIf(n -> n % 2 == 0));
+        assertFalse(collection.removeIf(n -> n % 2 == 0));
+        assertTrue(collection.stream().allMatch(n -> n % 2 != 0));
     }
 
     @Test

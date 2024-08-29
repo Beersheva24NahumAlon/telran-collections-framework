@@ -12,8 +12,6 @@ public interface Collection<T> extends Iterable<T> {
 
     int size();
 
-    boolean isEmpty();
-
     boolean contains(T pattern);
 
     default Stream<T> stream() {
@@ -39,5 +37,9 @@ public interface Collection<T> extends Iterable<T> {
 
     default void clear() {
         removeIf(n -> true);
+    }
+
+    default boolean isEmpty() {
+        return size() == 0;
     }
 }

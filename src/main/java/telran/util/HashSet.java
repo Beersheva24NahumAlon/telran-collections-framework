@@ -85,11 +85,6 @@ public class HashSet<T> implements Set<T> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    @Override
     public boolean contains(T pattern) {
         int index = getIndex(pattern, hashTable.length);
         List<T> list = hashTable[index];

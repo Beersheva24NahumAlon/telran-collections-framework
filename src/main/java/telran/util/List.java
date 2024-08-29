@@ -27,11 +27,6 @@ public interface List<T> extends Collection<T> {
         return indexOf(pattern) >= 0;
     }
 
-    @Override
-    default boolean isEmpty() {
-        return size() == 0;
-    }
-
     default void checkBounds(int index, boolean inclusiveBounds) {
         int size = size();
         int limit = inclusiveBounds ? size : size - 1;
