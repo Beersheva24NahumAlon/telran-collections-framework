@@ -108,22 +108,17 @@ public class TreeSet<T> implements Set<T> {
     private void removeNonJunction(Node<T> node) {
         Node<T> parent = node.parent;
         Node<T> child = getChild(node);
-        if (parent == null && child != null) {
-            root = child;
-            child.parent = null;
-        } else if (child == null && parent != null) {
-            if (isRigthChild(node)) {
-                parent.right = null;
-            } else {
-                parent.left = null;
-            }
-        } else if (parent != null && child != null) {
-            child.parent = parent;
+        if (parent != null) {
             if (isRigthChild(node)) {
                 parent.right = child;
             } else {
                 parent.left = child;
             }
+        } else {
+            root = child;
+        }
+        if (child != null) {
+            child.parent = parent;
         }
         deleteNode(node);
     }
@@ -140,7 +135,7 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private boolean isRigthChild(Node<T> node) {
-        return node.parent.right.obj == node.obj;
+        return node.parent.right == node;
     }
 
     private void deleteNode(Node<T> node) {
@@ -240,8 +235,7 @@ public class TreeSet<T> implements Set<T> {
 
     @Override
     public boolean contains(T pattern) {
-        Node<T> node = getNode(pattern);
-        return node != null;
+        return getNode(pattern) != null;
     }
 
     @Override

@@ -15,10 +15,10 @@ import java.util.Random;
 import org.junit.jupiter.api.Test;
 
 public abstract class CollectionTest {
-    private static final int N_ELEMENTS = 10;
+    private static final int N_ELEMENTS = 2_000_000;
     protected Collection<Integer> collection;
     Random random = new Random();
-    Integer[] array = { 3, -10, 20, 1, 10, 8, 100, 17 };
+    Integer[] array = { 3, -10 , 20, 1, 10, 8, 100, 17 };
 
     void setUp() {
         Arrays.stream(array).forEach(collection::add);
