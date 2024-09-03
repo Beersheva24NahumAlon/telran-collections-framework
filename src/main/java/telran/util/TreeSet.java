@@ -34,10 +34,9 @@ public class TreeSet<T> implements Set<T> {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
-            T res = current.obj;
             previous = current;
             current = getNextCurrent(current);
-            return res;
+            return previous.obj;
         }
 
         @Override
@@ -71,13 +70,7 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private Node<T> getNextCurrent(Node<T> node) {
-        Node<T> current = node;
-        if (current.right != null) {
-            current = getLeastFrom(current.right);
-        } else {
-            current = getGreaterParent(current);
-        }
-        return current;
+        return node.right != null ? getLeastFrom(node.right) : getGreaterParent(node);
     }
 
     private Node<T> getGreaterParent(Node<T> node) {
@@ -96,7 +89,6 @@ public class TreeSet<T> implements Set<T> {
             removeNonJunction(node);
         }
         size--;
-
     }
 
     private void removeJunction(Node<T> node) {
@@ -124,14 +116,7 @@ public class TreeSet<T> implements Set<T> {
     }
 
     private Node<T> getChild(Node<T> node) {
-        Node<T> res = null;
-        if (node.left != null) {
-            res = node.left;
-        }
-        if (node.right != null) {
-            res = node.right;
-        }
-        return res;
+        return node.left != null ? node.left : node.right;
     }
 
     private boolean isRigthChild(Node<T> node) {
