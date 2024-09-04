@@ -72,8 +72,9 @@ public abstract class AbstractMapTest {
     void putIfAbsentTest() {
         assertEquals(null, map.putIfAbsent(2, 4));
         assertEquals(9, map.size());
-        assertEquals(4, map.putIfAbsent(2, 4));
+        assertEquals(4, map.putIfAbsent(2, 5));
         assertEquals(9, map.size());
+        assertFalse(map.containsValue(5));
     }
 
     @Test
@@ -82,5 +83,7 @@ public abstract class AbstractMapTest {
         assertEquals(9, map.size());
         assertEquals(4, map.put(2, 5));
         assertEquals(9, map.size());
+        assertTrue(map.containsValue(5));
+        assertEquals(5, map.get(2));
     }
 }
