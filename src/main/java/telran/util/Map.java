@@ -33,9 +33,11 @@ public interface Map<K, V> {
             return key.hashCode();
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object obj) {
-            return key.equals(obj);
+            Entry<K, V> entry = (Entry<K, V>) obj;
+            return key.equals(entry.key);
         }
     }
 
@@ -49,8 +51,11 @@ public interface Map<K, V> {
     V put(K key, V value);
 
     default V putIfAbsent(K key, V value) {
-        //TODO based on get
-        return null;
+        V res = get(key);
+        if (res == null) {
+            put(key, value);
+        }
+        return res;
     }
 
     boolean containsKey(Object key);
