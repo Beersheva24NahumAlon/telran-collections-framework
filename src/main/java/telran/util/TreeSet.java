@@ -303,8 +303,12 @@ public class TreeSet<T> implements SortedSet<T> {
 
     @Override
     public SortedSet<T> subSet(T keyFrom, T keyTo) {
-        SortedSet<T> res = new TreeSet<>();
-        stream().filter(n -> comparator.compare(n, keyFrom) >= 0 && comparator.compare(n, keyTo) < 0).forEach(n -> res.add(n));
+        SortedSet<T> res = new TreeSet<>(comparator);
+        Node<T> node = getFloorNode(keyFrom);
+        while (node != null && comparator.compare(node.obj, keyTo) < 0) {
+            res.add(node.obj);
+            node = getNextCurrent(node);
+        }
         return res;
     }
 }
