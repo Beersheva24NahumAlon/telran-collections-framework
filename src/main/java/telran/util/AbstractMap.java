@@ -1,24 +1,25 @@
 package telran.util;
 
-import java.util.Iterator;
-
 public abstract class AbstractMap<K, V> implements Map<K, V> {
     protected Set<Entry<K, V>> set;
 
     protected abstract Set<K> getEmptyKeySet();
 
     @SuppressWarnings("unchecked")
-    @Override
-    public V get(Object key) {
+    private Entry<K, V> getEntry(Object key) {
         Entry<K, V> pattern = new Entry<>((K) key, null);
-        Entry<K, V> entry = set.get(pattern);
+        Entry<K, V> entry = set.get(pattern); 
+        return entry; 
+    }
+
+    public V get(Object key) {
+        Entry<K, V> entry = getEntry(key);
         return entry == null ? null : entry.getValue();
     }
 
     @Override
     public V put(K key, V value) {
-        Entry<K, V> pattern = new Entry<>((K) key, null);
-        Entry<K, V> entry = set.get(pattern);
+        Entry<K, V> entry = getEntry(key);
         V res = null;
         if (entry != null) {
             res = entry.getValue();
@@ -29,27 +30,21 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
         return res;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean containsKey(Object key) {
-        Entry<K, V> pattern = new Entry<>((K) key, null);
-        Entry<K, V> entry = set.get(pattern);
+        Entry<K, V> entry = getEntry(key);
         return entry != null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean containsValue(Object value) {
-        return values().contains((V) value);
+        return set.stream().anyMatch(o -> java.util.Objects.equals(o.getValue(), value));
     }
 
     @Override
     public Set<K> keySet() {
         Set<K> keySet = getEmptyKeySet();
-        Iterator<Entry<K, V>> it = set.iterator();
-        while (it.hasNext()) {
-            keySet.add(it.next().getKey());
-        }
+        set.stream().forEach(entry -> keySet.add(entry.getKey()));
         return keySet;
     }
 
@@ -61,10 +56,7 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     @Override
     public Collection<V> values() {
         ArrayList<V> collection = new ArrayList<>();
-        Iterator<Entry<K, V>> it = set.iterator();
-        while (it.hasNext()) {
-            collection.add(it.next().getValue());
-        }
+        set.stream().forEach(entry -> collection.add(entry.getValue()));
         return collection;
     }
 
@@ -76,5 +68,16 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
     @Override
     public boolean isEmpty() {
         return set.isEmpty();
+    }
+
+    @Override
+    public V remove(K key) {
+        Entry<K, V> entry = getEntry(key);
+        V res = null;
+        if (entry != null) {
+            set.remove(entry);
+            res = entry.getValue();
+        }
+        return res;
     }
 }

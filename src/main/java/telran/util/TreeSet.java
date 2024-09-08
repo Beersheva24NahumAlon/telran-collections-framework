@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Comparator;
 
-public class TreeSet<T> implements Set<T> {
+public class TreeSet<T> implements SortedSet<T> {
     private Node<T> root;
     private Comparator<T> comparator;
     int size;
@@ -77,6 +77,15 @@ public class TreeSet<T> implements Set<T> {
         Node<T> current = node;
         T nodeObj = node.obj;
         while (current != null && comparator.compare(nodeObj, current.obj) >= 0) {
+            current = current.parent;
+        }
+        return current;
+    }
+
+    private Node<T> getLessParent(Node<T> node) {
+        Node<T> current = node;
+        T nodeObj = node.obj;
+        while (current != null && comparator.compare(nodeObj, current.obj) <= 0) {
             current = current.parent;
         }
         return current;
@@ -234,5 +243,68 @@ public class TreeSet<T> implements Set<T> {
         T obj = (T) pattern;
         Node<T> node = getNode(obj);
         return node != null ? node.obj : null;
+    }
+
+    @Override
+    public T first() {
+        Node<T> node = getLeastFrom(root);
+        return  node == null ? null : node.obj;
+    }
+
+    @Override
+    public T last() {
+        Node<T> node = getGretestFrom(root);
+        return  node == null ? null : node.obj;
+    }
+
+    @Override
+    public T floor(T key) {
+        Node<T> res = getFloorNode(key);
+        return res != null ? res.obj : null;
+    }
+
+    private Node<T> getFloorNode(T key) {
+        Node<T> node = getNode(key);
+        Node<T> res = null;
+        if (node != null) {
+            res = node;
+        } else {
+            Node<T> parent = getParent(key);
+            if (comparator.compare(key, parent.obj) < 0) {
+                res = getLessParent(parent);
+            } else {
+                res = parent;
+            }
+        }   
+        return res;
+    }
+
+    @Override
+    public T ceiling(T key) {
+        Node<T> res = getCeilingNode(key);
+        return res != null ? res.obj : null;
+    }
+
+    private Node<T> getCeilingNode(T key) {
+        Node<T> node = getNode(key);
+        Node<T> res = null;
+        if (node != null) {
+            res = node;
+        } else {
+            Node<T> parent = getParent(key);
+            if (comparator.compare(key, parent.obj) > 0) {
+                res = getGreaterParent(parent);
+            } else {
+                res = parent;
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public SortedSet<T> subSet(T keyFrom, T keyTo) {
+        SortedSet<T> res = new TreeSet<>();
+        stream().filter(n -> comparator.compare(n, keyFrom) >= 0 && comparator.compare(n, keyTo) < 0).forEach(n -> res.add(n));
+        return res;
     }
 }

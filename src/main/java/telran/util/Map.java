@@ -71,4 +71,6 @@ public interface Map<K, V> {
     int size();
 
     boolean isEmpty();
+
+    V remove(K key);
 }
