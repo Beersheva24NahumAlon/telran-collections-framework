@@ -48,36 +48,25 @@ public class LinkedHashSet<T> implements Set<T> {
     }
 
     class LinkedHashSetIterator implements Iterator<T> {
-        Node<T> current = list.head;
-        Node<T> previous = null;
+        Iterator<T> it = list.iterator();
+        T current;
 
         @Override
         public boolean hasNext() {
-            return current != null;
+            return it.hasNext();
         }
 
         @Override
         public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            T res = current.obj;
-            previous = current;
-            current = current.next;
-            return res;
+            current = it.next();
+            return current;
         }
 
         @Override
         public void remove() {
-            if (previous == null) {
-                throw new IllegalStateException();
-            }
-            T pattern = previous.obj;
-            list.removeNode(previous);
-            map.remove(pattern);
-            previous = null;
-        } 
-        
+            it.remove();
+            map.remove(current);
+        }     
     } 
 
     @Override
@@ -85,5 +74,4 @@ public class LinkedHashSet<T> implements Set<T> {
         Node<T> node = map.get(pattern);
         return node != null ? node.obj : null;
     }
-
 }
