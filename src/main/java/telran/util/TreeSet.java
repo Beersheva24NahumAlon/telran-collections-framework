@@ -7,7 +7,9 @@ import java.util.Comparator;
 public class TreeSet<T> implements SortedSet<T> {
     private Node<T> root;
     private Comparator<T> comparator;
+    private String printingSymbol = " ";
     int size;
+    private int countOfSymbols = 3;
 
     private static class Node<T> {
         T obj;
@@ -47,6 +49,14 @@ public class TreeSet<T> implements SortedSet<T> {
             removeNode(previous);
             previous = null;
         }
+    }
+
+    public void setPrintingSymbol(String printingSymbol) {
+        this.printingSymbol = printingSymbol;
+    }
+
+    public void setCountOfSymbols(int countOfSymbols) {
+        this.countOfSymbols = countOfSymbols;
     }
 
     private Node<T> getLeastFrom(Node<T> node) {
@@ -313,5 +323,76 @@ public class TreeSet<T> implements SortedSet<T> {
             node = getNextCurrent(node);
         }
         return res;
+    }
+
+    public void displayTreeRotated() {
+        displayTreeRotated(root, 0);
+    }
+
+    private void displayTreeRotated(Node<T> root, int level) {
+        if (root != null) {
+            displayTreeRotated(root.right, level + 1);
+            displayRootObject(root, level);
+            displayTreeRotated(root.left, level + 1);
+        }
+    }
+
+    private void displayRootObject(Node<T> root, int level) {
+        System.out.printf("%s%s\n", printingSymbol.repeat(level * countOfSymbols), root.obj.toString());
+    }
+
+    public void displayTreeParentChildren() {
+        displayTreeParentChildren(root, 0);
+    }
+
+    private void displayTreeParentChildren(Node<T> root, int level) {
+        if (root != null) {
+            displayRootObject(root, level);
+            displayTreeParentChildren(root.left, level + 1);
+            displayTreeParentChildren(root.right, level + 1);
+        }
+    }
+
+    public int width() {
+        return width(root);
+    }
+
+    private int width(Node<T> root) {
+        int res = 0;
+        if (root != null) {
+            res = (root.left == null && root.right == null) ? 1 : width(root.left) + width(root.right);
+        }
+        return res;
+    }
+
+    public int height() {
+        return height(root);
+    }
+
+    private int height(Node<T> root) {
+        int res = 0;
+        if (root != null) {
+            int heightLeft = height(root.left);
+            int heightRight = height(root.right);
+            res = heightLeft > heightRight ? heightLeft: heightRight;
+            res++;
+        }
+        return res;
+    }
+
+    public void inversion() {
+        inversion(root);
+        comparator = comparator.reversed();
+    }
+
+    private void inversion(Node<T> root) {
+        if (root != null) {
+            Node<T> tmp = root.left;
+            root.left = root.right;
+            root.right = tmp;
+            tmp = null;
+            inversion(root.left);
+            inversion(root.right);
+        }
     }
 }
