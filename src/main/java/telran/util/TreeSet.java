@@ -395,4 +395,32 @@ public class TreeSet<T> implements SortedSet<T> {
             inversion(root.right);
         }
     }
+
+    public void balance() {
+        Node<T>[] nodes = getSortedNodesArray();
+        root = balanceArray(nodes, 0, nodes.length - 1, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<T>[] getSortedNodesArray() {
+        Node<T> current = getLeastFrom(root);
+        Node<T>[] res = new Node[size]; 
+        for (int i = 0; i < res.length; i++) {
+            res[i] = current;
+            current = getNextCurrent(current);
+        }
+        return res;
+    }
+
+    private Node<T> balanceArray(Node<T>[] nodes, int left, int right, Node<T> parent) {
+        Node<T> root = null;
+        if (left <= right) {
+            int middle = left + (right - left) / 2;
+            root = nodes[middle];
+            root.parent = parent;
+            root.left = balanceArray(nodes, left, middle - 1, root);
+            root.right = balanceArray(nodes, middle + 1, right, root);
+        }
+        return root;
+    }
 }

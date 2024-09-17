@@ -4,9 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.util.stream.IntStream;
+import java.util.Arrays;
+import java.util.Random;
+
 import org.junit.jupiter.api.Test;
 
-public class SortedSetTest extends SetTest{
+public class SortedSetTest extends SetTest {
     SortedSet<Integer> sortedSet;
 
     @Override
@@ -47,5 +51,41 @@ public class SortedSetTest extends SetTest{
         Integer[] expected = { 10, 17 };
         Integer[] actual = sortedSet.subSet(10, 20).stream().toArray(Integer[]::new);
         assertArrayEquals(expected, actual);
+    }
+
+    @Override
+    protected void fillBigCollection() {
+        Integer[] array = getBigArrayCW();
+        Arrays.stream(array).forEach(collection::add);
+    }
+
+    protected Integer[] getBigArrayCW() {
+        return new Random().ints().distinct().limit(N_ELEMENTS).boxed().toArray(Integer[]::new);
+    }
+
+    protected Integer[] getBigArrayHW() {
+        Integer[] sortedArray = getBigArrayCW();
+        java.util.Arrays.sort(sortedArray);
+        ArrayList<Integer> balancedArray = new ArrayList<>();
+        balanceArray(sortedArray, balancedArray, 0, sortedArray.length - 1);
+        return balancedArray.stream().toArray(Integer[]::new);
+    }
+
+    private void balanceArray(Integer[] arraySrc, ArrayList<Integer> arrayDst, int left, int right) {
+        if (left <= right) {
+            int middle = left + (right - left) / 2;
+            arrayDst.add(arraySrc[middle]);
+            balanceArray(arraySrc, arrayDst, left, middle - 1);
+            balanceArray(arraySrc, arrayDst, middle + 1, right);
+        }
+    }
+
+    @Override
+    protected void runTest(Integer[] expected) {
+        Integer[] expectedSorted = Arrays.copyOf(expected, expected.length);
+        Arrays.sort(expectedSorted);
+        Integer[] actualSorted = collection.stream().toArray(Integer[]::new);
+        assertArrayEquals(expectedSorted, actualSorted);
+        assertEquals(expected.length, collection.size());
     }
 }
