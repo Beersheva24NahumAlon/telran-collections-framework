@@ -65,18 +65,19 @@ public class SortedSetTest extends SetTest {
     protected Integer[] getBigArrayHW() {
         Integer[] sortedArray = getBigArrayCW();
         java.util.Arrays.sort(sortedArray);
-        ArrayList<Integer> balancedArray = new ArrayList<>();
-        balanceArray(sortedArray, balancedArray, 0, sortedArray.length - 1);
-        return balancedArray.stream().toArray(Integer[]::new);
+        Integer[] balancedArray = new Integer[sortedArray.length];
+        balanceArray(sortedArray, balancedArray, 0, sortedArray.length - 1, 0);
+        return balancedArray;
     }
 
-    private void balanceArray(Integer[] arraySrc, ArrayList<Integer> arrayDst, int left, int right) {
+    private int balanceArray(Integer[] arraySrc, Integer[] arrayDst, int left, int right, int index) {
         if (left <= right) {
             int middle = left + (right - left) / 2;
-            arrayDst.add(arraySrc[middle]);
-            balanceArray(arraySrc, arrayDst, left, middle - 1);
-            balanceArray(arraySrc, arrayDst, middle + 1, right);
+            arrayDst[index++] = arraySrc[middle];
+            index = balanceArray(arraySrc, arrayDst, left, middle - 1, index);
+            index = balanceArray(arraySrc, arrayDst, middle + 1, right, index);
         }
+        return index;
     }
 
     @Override
